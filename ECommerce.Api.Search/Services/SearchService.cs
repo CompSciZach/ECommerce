@@ -18,6 +18,7 @@ namespace ECommerce.Api.Search.Services
         }
         public async Task<(bool IsSuccess, dynamic SearchResults)> SearchAsync(int customerId)
         {
+            var customersResult = await customersService.GetCustomerAsync(customerId);
             var ordersResult = await ordersService.GetOrdersAsync(customerId);
             var productsResult = await productsService.GetProductsAsync();
             
@@ -34,6 +35,9 @@ namespace ECommerce.Api.Search.Services
                 }
                 var result = new
                 {
+                    Customer = customersResult.IsSuccess ?
+                    customersResult.Customer :
+                        new { Name = "Customer information is not available" },
                     Orders = ordersResult.Orders
                 };
                 return (true, result);
